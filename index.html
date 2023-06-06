@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 7 - TRÒ CHƠI CHỌN SỐ</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .score {
+            border: 2px solid saddlebrown;
+            height: 50px;
+            line-height: 50px;
+            color: saddlebrown;
+            text-align: center;
+        }
+
+        .btn-start {
+            width: 100px;
+            height: 50px;
+            border-radius: 10px;
+            background: saddlebrown;
+            color: #fff;
+            text-align: center;
+            line-height: 50px;
+            margin: 10px auto ;
+            cursor: pointer;
+        }
+
+        .game-frame {
+            width: 90%;
+            height: 80%;
+            margin: 0 auto;
+            position: relative;
+            border: 1px saddlebrown solid;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            color: #fff;
+            background: saddlebrown;
+            position: absolute;
+            text-align: center;
+            line-height: 30px;
+            transition: 0.5s ease-in-out;
+            cursor: pointer;
+            border: 1px saddlebrown solid;
+            z-index: 2;
+        }
+
+        .clicked {
+            background: rgb(152, 6, 62);
+        }
+
+        .false {
+            background: #ccc;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="score">ĐIỂM: </div>
+    <div class="btn-start">Start</div>
+    <div class="game-frame" style="background-color: black;">
+        
+    </div>
+
+    <script>
+        let timeStart;
+        let timePlay;
+        const btnStart = document.querySelector('.btn-start');
+        const scoreFrame = document.querySelector('.score');
+        const gameFrame = document.querySelector('.game-frame');
+        let circleList;
+        let countScore = 0;
+        let count = 0;
+        const width = window.innerWidth *9/10;
+        const height = window.innerHeight * 8/10;
+
+        // returns a random number between min (included) and max (excluded)
+        function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min) ) + min;
+        }
+
+        // set default
+        // gameFrame.style.display = 'none';
+        countScore =0;
+        scoreFrame.textContent = "Điểm: "+countScore;
+
+        
+        btnStart.onclick = function () {
+            const amount = +prompt("Nhập vào số lượng số: ");
+            gameFrame.innerHTML = '';
+            countScore =0;
+            count = 0;
+            scoreFrame.textContent = "Điểm: "+countScore;  
+
+            //add 100 circle
+            for (let index = 1; index <= amount; index++) {
+                gameFrame.innerHTML += '<div class="circle" style="left : '+getRndInteger(0, width - 30) + 'px'+'; top : '+getRndInteger(0, height - 30) + 'px'+'">'+index+'</div>';
+            }
+
+            //add score
+            circleList = document.querySelectorAll('.circle');
+
+            circleList.forEach(element => {
+                element.onclick = function () {
+                    const text = +element.textContent;
+                    const background = window.getComputedStyle( element , null).getPropertyValue( 'background' );
+                    const defaultBackground = 'rgb(139, 69, 19) none repeat scroll 0% 0% / auto padding-box border-box';
+
+                    console.log(text, background);   
+
+                    if ( text == count + 1 &&  background == defaultBackground) {
+                        //update score
+                        count++;
+                        countScore += 1;
+                        scoreFrame.textContent = "Điểm: "+countScore;   
+                        //change color
+                        element.style.display = 'none';
+
+                    } 
+                    else if (text == count + 1 && background != defaultBackground) {
+                        count++;
+                        element.classList.add('false');
+                        element.classList.remove('clicked');
+                    } 
+                    else if (text != count + 1 && background == defaultBackground) {
+                        //change color
+                        element.classList.add('clicked');
+                    } else {
+                    }
+                    
+                }
+            });
+
+            //out of time
+            const timeId = setTimeout(function () {
+                gameFrame.innerHTML = '';
+                
+                alert('Hết giờ, điểm của bạn là: '+countScore);
+                countScore =0;
+                scoreFrame.textContent = "Điểm: "+countScore; 
+
+            }, amount * 1500); 
+
+        };
+
+    </script>
+</body>
+</html>
